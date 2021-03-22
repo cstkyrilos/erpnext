@@ -1,0 +1,25 @@
+{
+ "add_total_row": 0, 
+ "apply_user_permissions": 1, 
+ "creation": "2019-05-25 00:23:15.705977", 
+ "disabled": 0, 
+ "docstatus": 0, 
+ "doctype": "Report", 
+ "idx": 0, 
+ "is_standard": "Yes", 
+ "letter_head": "standard", 
+ "modified": "2019-07-14 14:52:47.303144", 
+ "modified_by": "Administrator", 
+ "module": "Accounts", 
+ "name": "Invoice Profit", 
+ "owner": "Administrator", 
+ "query": "select name as 'Invoice:Link/Sales Invoice:120', \nbase_net_total as 'Net Amount:Currency:150', \nbase_total_taxes_and_charges as 'Taxes and Charges::150', \nbase_grand_total as 'Grand Total::120', \nsum(item_valuation) as 'Invoice Cost:Currency:120', \nbase_net_total-sum(item_valuation) as 'Invoice Profit:Currency:120'\nfrom (\nselect si.idx,s.name, s.base_net_total, s.base_total_taxes_and_charges, s.base_grand_total, \nsi.item_code,  \n@sl:=(select abs(stock_value_difference/actual_qty) from `tabStock Ledger Entry` where item_code=si.item_code \nand voucher_type='Delivery Note' and voucher_no=ifnull(si.delivery_note, (select parent from `tabDelivery Note Item` where so_detail=si.so_detail limit 1))\ngroup by item_code\norder by posting_date desc, posting_time desc) as sl, \n@sl*si.qty as item_valuation\nfrom `tabSales Invoice Item` si\nleft join `tabSales Invoice` s on si.parent=s.name\nwhere si.docstatus=1 and s.name=%(invoice_no)s) a\n", 
+ "ref_doctype": "Sales Invoice", 
+ "report_name": "Invoice Profit", 
+ "report_type": "Query Report", 
+ "roles": [
+  {
+   "role": "Accounts Manager"
+  }
+ ]
+}

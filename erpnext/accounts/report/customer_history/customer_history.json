@@ -1,0 +1,34 @@
+{
+ "add_total_row": 1, 
+ "apply_user_permissions": 1, 
+ "creation": "2019-03-08 15:38:27.991048", 
+ "disabled": 0, 
+ "docstatus": 0, 
+ "doctype": "Report", 
+ "idx": 0, 
+ "is_standard": "Yes", 
+ "letter_head": "standard", 
+ "modified": "2019-03-09 14:36:15.952377", 
+ "modified_by": "Administrator", 
+ "module": "Accounts", 
+ "name": "Customer History", 
+ "owner": "Administrator", 
+ "query": "select g.posting_date as 'Date::100', g.voucher_type as 'Type::150', if(g.voucher_type='Sales Invoice', 1,0) as 'x:Int:30', g.voucher_no as 'Voucher::150', \ns.sales_invoice_type as 'Invoice Type::150', g.account_currency as 'Currency::70', \nif(g.voucher_type='Sales Invoice', g.debit_in_account_currency,0) as 'Invoice Amount:Currency:120', \n if(g.voucher_type<>'Sales Invoice', g.credit_in_account_currency-g.debit_in_account_currency,0) as 'Payments:Currency:100', ifnull(s.outstanding_amount,0) as 'Outstandings:Currency:100'\nfrom `tabGL Entry` g\nleft join `tabSales Invoice` s on s.name=g.voucher_no and g.voucher_type='Sales Invoice'\nwhere party=%(customer)s\norder by g.posting_date", 
+ "ref_doctype": "GL Entry", 
+ "report_name": "Customer History", 
+ "report_type": "Query Report", 
+ "roles": [
+  {
+   "role": "Auditor"
+  }, 
+  {
+   "role": "Accounts User"
+  }, 
+  {
+   "role": "Accounts Manager"
+  }, 
+  {
+   "role": "Milad"
+  }
+ ]
+}
